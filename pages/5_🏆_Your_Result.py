@@ -31,6 +31,9 @@ with st.spinner("Analyzing your answers..."):
         top_features
     )
 
+    # Store the predicted cluster in session state for use in other pages
+    st.session_state.user_cluster = predicted_cluster
+
     # Analyze all clusters to get the summary for the user's cluster
     cluster_summary, _ = analyze_clusters()
 
@@ -109,9 +112,18 @@ with st.expander("See Your Answers"):
     for category, choice in user_preferences.items():
         st.write(f"- **Favorite {category.replace('fav_', '').replace('_', ' ').title()}:** {choice}")
 
-# --- Retake Quiz Button ---
-if st.button("Take the Quiz Again", use_container_width=True):
-    # Clear the answers from the session state
-    if 'user_quiz_answers' in st.session_state:
-        del st.session_state['user_quiz_answers']
-    st.switch_page("pages/4_📝_Fan_Quiz.py")
+# --- Action Buttons ---
+col1, col2 = st.columns(2)
+
+with col1:
+    if st.button("🔍 Explore My Cluster's Network", use_container_width=True):
+        st.switch_page("pages/3_📊_CDC_Network_Analysis.py")
+
+with col2:
+    if st.button("🔄 Take the Quiz Again", use_container_width=True):
+        # Clear the answers from the session state
+        if 'user_quiz_answers' in st.session_state:
+            del st.session_state['user_quiz_answers']
+        if 'user_cluster' in st.session_state:
+            del st.session_state['user_cluster']
+        st.switch_page("pages/4_📝_Fan_Quiz.py")
