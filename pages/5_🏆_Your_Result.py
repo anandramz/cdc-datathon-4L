@@ -1,5 +1,5 @@
 import streamlit as st
-from backend.clustering import load_clustering_artifacts, predict_cluster
+from backend.clustering import load_clustering_artifacts, predict_cluster, analyze_clusters
 
 st.set_page_config(layout="centered", page_title="🏆 Your Result")
 
@@ -31,6 +31,9 @@ with st.spinner("Analyzing your answers..."):
         top_features
     )
 
+    # Analyze all clusters to get the summary for the user's cluster
+    cluster_summary, _ = analyze_clusters()
+
 # --- Display Result ---
 st.success(f"## You belong to Fan Cluster #{predicted_cluster}!")
 
@@ -57,6 +60,47 @@ num_clusters = kmeans_model.n_clusters
 # Display the appropriate description
 description = cluster_descriptions.get(predicted_cluster, "This cluster represents a unique combination of preferences! As we gather more data, a clearer profile for this group will emerge.")
 st.markdown(f"> {description}")
+
+# --- Show Cluster Statistics ---
+if cluster_summary and predicted_cluster in cluster_summary:
+    summary = cluster_summary[predicted_cluster]
+    st.subheader(f"Profile of Cluster #{predicted_cluster}")
+
+    col1, col2 = st.columns(2)
+    col1.metric("Fans in this Cluster", f"{summary['size']:,}")
+    col2.metric("Share of Total Fans", f"{summary['percentage']:.1f}%")
+
+    st.markdown("**How Your Answers Compare to Your Cluster:**")
+
+    feature_cols = ["fav_heroe", "fav_villain", "fav_planet", "fav_robot", "fav_spaceship", "fav_soundtrack"]
+    
+    for col_name in feature_cols:
+        st.markdown("--- ")
+        category_name = col_name.replace('fav_', '').replace('_', ' ').title()
+        st.subheader(f"Favorite {category_name}")
+
+        user_answer = user_preferences.get(col_name, "N/A")
+        top_cluster_choice = summary['top_answers'].get(col_name, [])
+
+        if top_cluster_choice:
+            cluster_answer = top_cluster_choice[0][0]
+            cluster_percentage = top_cluster_choice[0][2]
+
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("**Your Answer**")
+                st.info(user_answer)
+            
+            with col2:
+                st.markdown("**Your Cluster's Top Pick**")
+                st.success(f"{cluster_answer} ({cluster_percentage:.1f}%)")
+
+            if user_answer == cluster_answer:
+                st.write("✅ You picked the most popular choice for your cluster!")
+        else:
+            st.write(f"Your Answer: {user_answer}")
+            st.write("No dominant preference found for this category in your cluster.")
+
 
 st.markdown("--- ")
 
