@@ -14,6 +14,17 @@ st.title("📊 CDC Network Analysis")
 st.caption("Interactive network visualization of Star Wars preferences co-occurrence patterns")
 
 # -------------------------------
+# Module-level jaccard function (picklable)
+# -------------------------------
+def jaccard(a, b, pairs, freq):
+    """Calculate Jaccard similarity between two items"""
+    # Treat key order-invariant
+    key = (a, b) if (a, b) in pairs else (b, a)
+    inter = pairs.get(key, 0)
+    denom = freq[a] + freq[b] - inter
+    return inter / denom if denom else 0.0
+
+# -------------------------------
 # Data Loading
 # -------------------------------
 @st.cache_data(show_spinner=False)
@@ -54,7 +65,7 @@ def process_data(df):
     
     if not FAV_COLS:
         st.error("No columns found starting with 'fav_'")
-        return None, None, None, None, None
+        return None, None, None, None
     
     st.write(f"**Favorite columns found:** {', '.join(FAV_COLS)}")
     
@@ -81,13 +92,6 @@ def process_data(df):
         for a, b in itertools.combinations(uniq, 2):
             pairs[(a, b)] += 1  # store as ordered tuple (a<b)
     
-    def jaccard(a, b):
-        # Treat key order-invariant
-        key = (a, b) if (a, b) in pairs else (b, a)
-        inter = pairs.get(key, 0)
-        denom = freq[a] + freq[b] - inter
-        return inter / denom if denom else 0.0
-    
     # Convenience: map item -> type and raw label
     def split_tag(tag):
         # "heroe:Luke Skywalker" -> ("heroe", "Luke Skywalker")
@@ -99,9 +103,9 @@ def process_data(df):
     item_types = {it: split_tag(it)[0] for it in freq.keys()}
     raw_labels = {it: split_tag(it)[1] for it in freq.keys()}
     
-    return freq, pairs, jaccard, item_types, raw_labels
+    return freq, pairs, item_types, raw_labels
 
-freq, pairs, jaccard, item_types, raw_labels = process_data(df)
+freq, pairs, item_types, raw_labels = process_data(df)
 if freq is None:
     st.stop()
 
@@ -185,7 +189,7 @@ def build_galaxy_html(include_types, node_min_support, edge_min_pair_count, edge
             continue
         if inter < edge_min_pair_count:
             continue
-        jac = jaccard(a, b)
+        jac = jaccard(a, b, pairs, freq)
         if jac < edge_min_jaccard:
             continue
         edges.append((a, b, inter, jac))
@@ -292,7 +296,7 @@ with col_right:
         for (a, b), inter in pairs.items():
             if (a in filtered_items and b in filtered_items and 
                 inter >= edge_min_pair_count and 
-                jaccard(a, b) >= edge_min_jaccard):
+                jaccard(a, b, pairs, freq) >= edge_min_jaccard):
                 edge_count += 1
         
         st.metric("Edges (filtered)", min(edge_count, max_edges))
@@ -338,7 +342,7 @@ with col_right:
                         other = a
                     
                     if other and inter >= 5:  # Minimum threshold for display
-                        jac = jaccard(it, other)
+                        jac = jaccard(it, other, pairs, freq)
                         connections.append((raw_labels.get(other, other), inter, jac))
                 
                 if connections:
