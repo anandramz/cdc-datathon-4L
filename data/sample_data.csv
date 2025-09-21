@@ -1,0 +1,11 @@
+patient_id,age,gender,condition,health_score,treatment_days,cost,admission_date,state,severity
+1,45,Male,Respiratory,78,12,2500,2023-01-15,CA,Medium
+2,67,Female,Cardiovascular,65,18,4200,2023-02-20,TX,High
+3,34,Male,Diabetes,82,8,1800,2023-03-10,FL,Low
+4,56,Female,Mental Health,71,15,3100,2023-04-05,NY,Medium
+5,72,Male,Cardiovascular,58,22,5200,2023-05-12,PA,High
+6,29,Female,Respiratory,85,6,1200,2023-06-18,IL,Low
+7,41,Male,Others,76,10,2200,2023-07-22,OH,Medium
+8,63,Female,Diabetes,69,14,2800,2023-08-30,GA,Medium
+9,38,Male,Mental Health,79,11,2600,2023-09-15,NC,Low
+10,55,Female,Respiratory,73,16,3400,2023-10-08,MI,High

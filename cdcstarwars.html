@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Wars This or That</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Anton&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'StarJedi';
+            src: url('https://www.fontspace.com/star-jedi-font-f9641') format('woff2'),
+                 url('https://www.fontspace.com/star-jedi-font-f9641') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'StarJedi', 'Anton', 'Orbitron', monospace;
+            background: #000;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Star Wars Background */
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .stars {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Generate random stars */
+        .stars:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .stars:nth-child(2) { top: 80%; left: 20%; animation-delay: 1s; }
+        .stars:nth-child(3) { top: 40%; left: 90%; animation-delay: 2s; }
+        .stars:nth-child(4) { top: 60%; left: 70%; animation-delay: 0.5s; }
+        .stars:nth-child(5) { top: 10%; left: 50%; animation-delay: 1.5s; }
+        .stars:nth-child(6) { top: 90%; left: 80%; animation-delay: 0.8s; }
+        .stars:nth-child(7) { top: 30%; left: 30%; animation-delay: 2.2s; }
+        .stars:nth-child(8) { top: 70%; left: 60%; animation-delay: 1.8s; }
+        .stars:nth-child(9) { top: 50%; left: 15%; animation-delay: 0.3s; }
+        .stars:nth-child(10) { top: 25%; left: 75%; animation-delay: 1.2s; }
+        .stars:nth-child(11) { top: 85%; left: 40%; animation-delay: 2.5s; }
+        .stars:nth-child(12) { top: 15%; left: 85%; animation-delay: 0.7s; }
+        .stars:nth-child(13) { top: 75%; left: 25%; animation-delay: 1.9s; }
+        .stars:nth-child(14) { top: 35%; left: 95%; animation-delay: 0.4s; }
+        .stars:nth-child(15) { top: 95%; left: 55%; animation-delay: 2.8s; }
+        .stars:nth-child(16) { top: 5%; left: 35%; animation-delay: 1.4s; }
+        .stars:nth-child(17) { top: 55%; left: 85%; animation-delay: 0.9s; }
+        .stars:nth-child(18) { top: 45%; left: 5%; animation-delay: 2.1s; }
+        .stars:nth-child(19) { top: 65%; left: 45%; animation-delay: 1.6s; }
+        .stars:nth-child(20) { top: 15%; left: 65%; animation-delay: 0.6s; }
+
+        .container {
+            max-width: 900px;
+            width: 90%;
+            text-align: center;
+            z-index: 1;
+        }
+
+        /* Star Wars Title Font Effect */
+        .star-wars-title {
+            font-family: 'StarJedi', 'Anton', sans-serif;
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            text-shadow: 
+                0 0 10px #FFE81F,
+                0 0 20px #FFE81F,
+                0 0 30px #FFE81F,
+                2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* Home Screen */
+        .home-screen {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #FFE81F;
+            border-radius: 20px;
+            padding: 60px 40px;
+            box-shadow: 
+                0 0 30px rgba(255, 232, 31, 0.3),
+                inset 0 0 30px rgba(255, 232, 31, 0.1);
+        }
+
+        .home-screen h1 {
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #FFE81F, #FFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .get-started-btn {
+            background: linear-gradient(45deg, #FFE81F, #FFA500);
+            color: #000;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.3em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: normal;
+            font-family: 'StarJedi', 'Anton', sans-serif;
+            box-shadow: 0 0 20px rgba(255, 232, 31, 0.5);
+        }
+
+        .get-started-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 15px 30px rgba(255, 232, 31, 0.4),
+                0 0 40px rgba(255, 232, 31, 0.8);
+            background: linear-gradient(45deg, #FFF, #FFE81F);
+        }
+
+        /* Game Screen */
+        .game-screen {
+            display: none;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .category-title {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            text-shadow: 
+                0 0 10px #FFE81F,
+                0 0 20px #FFE81F,
+                2px 2px 4px rgba(0,0,0,0.8);
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            font-family: 'StarJedi', 'Anton', sans-serif;
+        }
+
+        .category-progress {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            color: #FFE81F;
+            font-weight: normal;
+            font-family: 'StarJedi', 'Anton', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .battle-arena {
+            display: flex;
+            gap: 40px;
+            margin: 40px 0;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .choice-button {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #FFE81F;
+            border-radius: 15px;
+            padding: 40px 30px;
+            min-width: 320px;
+            min-height: 180px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.4em;
+            font-weight: normal;
+            font-family: 'StarJedi', 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-align: center;
+            box-shadow: 
+                0 0 20px rgba(255, 232, 31, 0.3),
+                inset 0 0 20px rgba(255, 232, 31, 0.1);
+        }
+
+        .choice-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 232, 31, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .choice-button:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: #FFF;
+            box-shadow: 
+                0 15px 35px rgba(255, 232, 31, 0.4),
+                0 0 40px rgba(255, 232, 31, 0.6);
+            text-shadow: 0 0 10px #FFE81F;
+        }
+
+        .choice-button:hover::before {
+            left: 100%;
+        }
+
+        .choice-button.selected {
+            border-color: #00FF00;
+            background: rgba(0, 255, 0, 0.2);
+            box-shadow: 
+                0 0 30px rgba(0, 255, 0, 0.6),
+                inset 0 0 20px rgba(0, 255, 0, 0.2);
+            text-shadow: 0 0 15px #00FF00;
+        }
+
+        .choice-button.removing {
+            animation: slideOutSide 0.8s ease-in-out forwards;
+        }
+
+        .choice-button.moving-to-center {
+            animation: moveToCenter 1s ease-out forwards;
+        }
+
+        .choice-button.winner-centered {
+            background: rgba(0, 255, 0, 0.3) !important;
+            border: 3px solid #00FF00 !important;
+            min-width: 400px !important;
+            min-height: 200px !important;
+            font-size: 1.8em !important;
+            box-shadow: 
+                0 0 40px rgba(0, 255, 0, 0.8),
+                inset 0 0 30px rgba(0, 255, 0, 0.2) !important;
+            text-shadow: 
+                0 0 20px #00FF00,
+                0 0 40px #00FF00 !important;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes slideOutSide {
+            0% { 
+                transform: translateY(0) scale(1); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateX(-200%) scale(0.5); 
+                opacity: 0; 
+            }
+        }
+
+        @keyframes moveToCenter {
+            0% {
+                transform: translateX(0) translateY(0) scale(1);
+            }
+            100% {
+                transform: translateX(0) translateY(0) scale(1.2);
+            }
+        }
+
+        .choice-button.entering {
+            animation: slideIn 0.5s ease-in-out forwards;
+        }
+
+        @keyframes slideOut {
+            0% { 
+                transform: translateY(0) scale(1); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateY(-50px) scale(0.8); 
+                opacity: 0; 
+            }
+        }
+
+        @keyframes slideIn {
+            0% { 
+                transform: translateY(50px) scale(0.8); 
+                opacity: 0; 
+            }
+            100% { 
+                transform: translateY(0) scale(1); 
+                opacity: 1; 
+            }
+        }
+
+        .winner-display {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .winner-display.show {
+            display: flex;
+            animation: centerWinner 1s ease-out forwards;
+        }
+
+        .winner-choice {
+            background: rgba(0, 255, 0, 0.3);
+            border: 3px solid #00FF00;
+            border-radius: 20px;
+            padding: 50px 40px;
+            min-width: 400px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8em;
+            font-weight: normal;
+            font-family: 'StarJedi', 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-align: center;
+            box-shadow: 
+                0 0 40px rgba(0, 255, 0, 0.8),
+                inset 0 0 30px rgba(0, 255, 0, 0.2);
+            text-shadow: 
+                0 0 20px #00FF00,
+                0 0 40px #00FF00;
+            animation: pulse 2s infinite;
+        }
+
+        .next-btn {
+            background: linear-gradient(45deg, #FFE81F, #FFA500);
+            color: #000;
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.4em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            font-family: 'StarJedi', 'Anton', sans-serif;
+            box-shadow: 0 0 30px rgba(255, 232, 31, 0.6);
+            animation: buttonGlow 2s ease-in-out infinite alternate;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 15px 40px rgba(255, 232, 31, 0.5),
+                0 0 60px rgba(255, 232, 31, 0.9);
+            background: linear-gradient(45deg, #FFF, #FFE81F);
+        }
+
+        @keyframes centerWinner {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 
+                    0 0 40px rgba(0, 255, 0, 0.8),
+                    inset 0 0 30px rgba(0, 255, 0, 0.2);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 
+                    0 0 60px rgba(0, 255, 0, 1),
+                    inset 0 0 40px rgba(0, 255, 0, 0.3);
+            }
+        }
+
+        @keyframes buttonGlow {
+            0% {
+                box-shadow: 0 0 30px rgba(255, 232, 31, 0.6);
+            }
+            100% {
+                box-shadow: 0 0 50px rgba(255, 232, 31, 0.9);
+            }
+        }
+
+        .vs-divider {
+            font-size: 3em;
+            font-weight: normal;
+            color: #FFE81F;
+            text-shadow: 
+                0 0 15px #FFE81F,
+                0 0 30px #FFE81F,
+                2px 2px 4px rgba(0,0,0,0.8);
+            font-family: 'StarJedi', 'Anton', sans-serif;
+            letter-spacing: 4px;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #FFE81F;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 
+                0 0 40px rgba(255, 232, 31, 0.4),
+                inset 0 0 30px rgba(255, 232, 31, 0.1);
+        }
+
+        .results-title {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 
+                0 0 15px #FFE81F,
+                0 0 30px #FFE81F,
+                2px 2px 4px rgba(0,0,0,0.8);
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-family: 'StarJedi', 'Anton', sans-serif;
+        }
+
+        .results-list {
+            background: rgba(255, 232, 31, 0.1);
+            border: 1px solid #FFE81F;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 232, 31, 0.3);
+            font-size: 1.1em;
+            font-family: 'StarJedi', 'Anton', sans-serif;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .category-name {
+            font-weight: normal;
+            color: #FFE81F;
+            text-transform: uppercase;
+            font-family: 'StarJedi', 'Anton', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .winner-name {
+            font-weight: normal;
+            color: #FFF;
+            text-transform: uppercase;
+            font-family: 'StarJedi', 'Anton', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(45deg, #FF0000, #8B0000);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            font-family: 'StarJedi', 'Anton', sans-serif;
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 10px 25px rgba(255, 0, 0, 0.4),
+                0 0 30px rgba(255, 0, 0, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .battle-arena {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .vs-divider {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+            
+            .choice-button {
+                min-width: 280px;
+                min-height: 140px;
+                font-size: 1.1em;
+            }
+
+            .winner-choice {
+                min-width: 350px;
+                min-height: 160px;
+                font-size: 1.4em;
+            }
+
+            .next-btn {
+                padding: 15px 40px;
+                font-size: 1.2em;
+            }
+
+            .home-screen h1 {
+                font-size: 2.5em;
+            }
+
+            .category-title {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Star Wars Background -->
+    <div class="stars-bg">
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+        <div class="stars"></div>
+    </div>
+
+    <div class="container">
+        <!-- Home Screen -->
+        <div id="homeScreen" class="home-screen">
+            <h1 class="star-wars-title">Star Wars<br>This or That</h1>
+            <button class="get-started-btn" onclick="startCategories()">Begin Your Journey</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="game-screen">
+            <div class="header">
+                <h2 class="category-title" id="categoryTitle"></h2>
+                <div class="category-progress" id="categoryProgress"></div>
+            </div>
+
+            <div class="battle-arena" id="battleArena">
+                <button class="choice-button" id="leftChoice" onclick="makeChoice('left')"></button>
+                <div class="vs-divider">VS</div>
+                <button class="choice-button" id="rightChoice" onclick="makeChoice('right')"></button>
+            </div>
+
+            <div class="winner-display" id="winnerDisplay">
+                <div class="winner-choice" id="winnerChoice"></div>
+                <button class="next-btn" onclick="proceedToNext()">Next</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="results-screen">
+            <h2 class="results-title star-wars-title">🌟 The Force Has Spoken! 🌟</h2>
+            <p>Your preferences have been transmitted to the Rebel Alliance database.</p>
+            <div class="results-list" id="resultsList"></div>
+            <button class="restart-btn" onclick="restartApp()">Return to Base</button>
+        </div>
+    </div>
+
+    <script>
+        // Star Wars categories and their options
+        const categories = [
+            {
+                name: "Favorite Hero",
+                key: "fav_heroe",
+                options: ["Anakin Skywalker", "Luke Skywalker", "Yoda", "Han Solo", "Obi-Wan Kenobi", "Chewbacca", "Leia", "Qui-Gon Jinn", "Jar Jar Binks"]
+            },
+            {
+                name: "Favorite Villain",
+                key: "fav_villain", 
+                options: ["Darth Maul", "Count Dooku", "Wilhuff Tarkin", "Palpatine", "Darth Vader", "General Grievous"]
+            },
+            {
+                name: "Favorite Film",
+                key: "fav_film",
+                options: ["Episode IV - A New Hope", "Episode V - The Empire Strikes Back", "Episode VI - Return of the Jedi", "Episode I - The Phantom Menace", "Episode III - Revenge of the Sith", "Episode II - Attack of the Clones"]
+            },
+            {
+                name: "Favorite Soundtrack",
+                key: "fav_soundtrack",
+                options: ["Across the Stars", "The Throne Room", "Star Wars (Main Theme)", "Imperial March", "Anakin vs. Obi-Wan"]
+            },
+            {
+                name: "Favorite Spaceship",
+                key: "fav_spaceship",
+                options: ["Naboo Starfighter", "Millennium Falcon", "TIE Fighter", "Death Star"]
+            },
+            {
+                name: "Favorite Planet",
+                key: "fav_planet",
+                options: ["Tatooine", "Endor", "Naboo", "Dagobah", "Alderaan"]
+            },
+            {
+                name: "Favorite Robot",
+                key: "fav_robot",
+                options: ["R2-D2", "Battle Droid", "C-3PO", "Droideka"]
+            }
+        ];
+
+        let currentCategoryIndex = 0;
+        let leftOption = '';
+        let rightOption = '';
+        let remainingOptions = [];
+        let results = [];
+
+        function startCategories() {
+            document.getElementById('homeScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            startNextCategory();
+        }
+
+        function startNextCategory() {
+            if (currentCategoryIndex >= categories.length) {
+                showResults();
+                return;
+            }
+
+            const category = categories[currentCategoryIndex];
+            remainingOptions = [...category.options];
+            
+            // Set initial left and right options
+            leftOption = remainingOptions.shift();
+            rightOption = remainingOptions.shift();
+            
+            document.getElementById('categoryTitle').textContent = category.name;
+            document.getElementById('categoryProgress').textContent = `Category ${currentCategoryIndex + 1} of ${categories.length}`;
+            
+            displayCurrentChoice();
+        }
+
+        function displayCurrentChoice() {
+            document.getElementById('leftChoice').textContent = leftOption;
+            document.getElementById('rightChoice').textContent = rightOption;
+            
+            // Remove any existing animation classes
+            document.getElementById('leftChoice').className = 'choice-button';
+            document.getElementById('rightChoice').className = 'choice-button';
+        }
+
+        function makeChoice(side) {
+            if (remainingOptions.length === 0) {
+                // Category complete - show winner animation
+                const winner = side === 'left' ? leftOption : rightOption;
+                const category = categories[currentCategoryIndex];
+                results.push({
+                    category: category.name,
+                    key: category.key,
+                    winner: winner
+                });
+                
+                showCategoryWinner(winner, side);
+                return;
+            }
+
+            // Animate the choice
+            const selectedButton = document.getElementById(side + 'Choice');
+            const unselectedButton = document.getElementById(side === 'left' ? 'rightChoice' : 'leftChoice');
+            
+            // Add selected animation to chosen button
+            selectedButton.classList.add('selected');
+            
+            // Add removing animation to unselected button
+            unselectedButton.classList.add('removing');
+            
+            // Update the options
+            if (side === 'left') {
+                // Left was chosen, right gets replaced
+                rightOption = remainingOptions.shift();
+            } else {
+                // Right was chosen, left gets replaced
+                leftOption = remainingOptions.shift();
+            }
+            
+            // After animation completes, update the content
+            setTimeout(() => {
+                // Remove selected class from chosen button
+                selectedButton.classList.remove('selected');
+                
+                // Update content and add entering animation to the replaced button
+                if (side === 'left') {
+                    document.getElementById('rightChoice').textContent = rightOption;
+                } else {
+                    document.getElementById('leftChoice').textContent = leftOption;
+                }
+                
+                unselectedButton.classList.remove('removing');
+                unselectedButton.classList.add('entering');
+                
+                // Remove entering class after animation
+                setTimeout(() => {
+                    unselectedButton.classList.remove('entering');
+                }, 500);
+                
+            }, 500);
+        }
+
+        function showCategoryWinner(winner, selectedSide) {
+            // Hide the VS divider
+            document.querySelector('.vs-divider').style.opacity = '0';
+            
+            // Get the selected and unselected buttons
+            const selectedButton = document.getElementById(selectedSide + 'Choice');
+            const unselectedButton = document.getElementById(selectedSide === 'left' ? 'rightChoice' : 'leftChoice');
+            
+            // Animate unselected button out
+            unselectedButton.classList.add('removing');
+            
+            // Move selected button to center and transform it
+            setTimeout(() => {
+                selectedButton.classList.add('moving-to-center');
+                
+                // After animation completes, show next button
+                setTimeout(() => {
+                    selectedButton.classList.add('winner-centered');
+                    
+                    // Create and show next button
+                    const nextBtn = document.createElement('button');
+                    nextBtn.className = 'next-btn';
+                    nextBtn.textContent = 'NEXT';
+                    nextBtn.onclick = proceedToNext;
+                    nextBtn.style.opacity = '0';
+                    nextBtn.style.transition = 'opacity 0.5s ease-out';
+                    
+                    document.getElementById('battleArena').appendChild(nextBtn);
+                    
+                    setTimeout(() => {
+                        nextBtn.style.opacity = '1';
+                    }, 100);
+                }, 1000);
+            }, 100);
+        }
+
+        function proceedToNext() {
+            // Remove next button
+            const nextBtn = document.querySelector('.next-btn');
+            if (nextBtn) {
+                nextBtn.remove();
+            }
+            
+            // Reset all elements
+            document.querySelector('.vs-divider').style.opacity = '1';
+            const leftChoice = document.getElementById('leftChoice');
+            const rightChoice = document.getElementById('rightChoice');
+            
+            // Clear all classes and inline styles
+            leftChoice.className = 'choice-button';
+            rightChoice.className = 'choice-button';
+            leftChoice.removeAttribute('style');
+            rightChoice.removeAttribute('style');
+            
+            // Move to next category
+            currentCategoryIndex++;
+            
+            setTimeout(() => {
+                startNextCategory();
+            }, 300);
+        }
+
+        function showResults() {
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+            
+            const resultsList = document.getElementById('resultsList');
+            resultsList.innerHTML = results.map(result => 
+                `<div class="result-item">
+                    <span class="category-name">${result.category}:</span>
+                    <span class="winner-name">${result.winner}</span>
+                </div>`
+            ).join('');
+
+            // Send results to backend
+            sendToBackend();
+        }
+
+        function sendToBackend() {
+            const resultData = {
+                timestamp: new Date().toISOString(),
+                preferences: results.reduce((acc, result) => {
+                    acc[result.key] = result.winner;
+                    return acc;
+                }, {}),
+                totalCategories: categories.length
+            };
+            
+            // Log the data that would be sent to backend
+            console.log('Sending to vector backend:', resultData);
+            
+            // Replace this with your actual backend call
+            // Example:
+            // fetch('/api/star-wars-preferences', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify(resultData)
+            // });
+            
+            console.log('Star Wars preferences transmitted to the Alliance!');
+        }
+
+        function restartApp() {
+            currentCategoryIndex = 0;
+            leftOption = '';
+            rightOption = '';
+            remainingOptions = [];
+            results = [];
+            
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('homeScreen').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
