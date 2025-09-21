@@ -7,10 +7,10 @@ from backend.clustering import (
     predict_cluster
 )
 
-st.set_page_config(layout="wide", page_title="🤖 User Clustering")
+st.set_page_config(layout="centered", page_title="📝 Star Wars Fan Quiz")
 
-st.title("🤖 Star Wars Fan Clustering")
-st.caption("Train a model based on user preferences and classify new fans into clusters.")
+st.title("📝 Star Wars Fan Quiz")
+st.caption("Answer these questions to find out which fan cluster you belong to!")
 
 # --- Paths and Data Loading ---
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -82,60 +82,44 @@ with st.sidebar:
                 st.error("Model training failed.")
 
 # --- Main Page Content ---
-if not st.session_state.artifacts_loaded:
-    st.info("Please train or load the model using the sidebar to continue.")
-    st.stop()
 
 # --- Display Top Features for Context ---
-st.header("Top 8 Most Predictive Features")
-st.caption("These features were identified by a Decision Tree as the most influential for predicting a user's favorite film. The clustering is based on them.")
-
-if st.session_state.top_features:
-    # Clean up feature names for display
-    cleaned_features = [f.replace('fav_heroe_', 'Hero: ').replace('fav_villain_', 'Villain: ').replace('fav_planet_', 'Planet: ').replace('fav_spaceship_', 'Ship: ').replace('_', ' ') for f in st.session_state.top_features]
-    st.code('\n'.join(cleaned_features), language='text')
-else:
-    st.warning("Top features not loaded.")
+if not st.session_state.artifacts_loaded:
+    st.warning("The clustering model is not loaded. Please ask the administrator to train or load the model.")
+    if st.button("Attempt to Load Model"):
+        st.rerun() # Will trigger the load button in the sidebar
+    st.stop()
 
 # --- User Input Form for Classification ---
-st.header("Classify a New Fan")
-st.caption("Fill out the form below to determine which fan cluster you belong to.")
+st.header("Your Preferences")
 
 if df is not None:
-    feature_cols = ["fav_heroe", "fav_villain", "fav_soundtrack", 
-                    "fav_spaceship", "fav_planet", "fav_robot"]
-    
-    user_preferences = {}
-    cols = st.columns(2)
-    
-    for i, col_name in enumerate(feature_cols):
-        with cols[i % 2]:
-            # Get unique, non-null options from the dataframe
+    with st.form(key='fan_quiz_form'):
+        feature_cols = ["fav_heroe", "fav_villain", "fav_soundtrack", 
+                        "fav_spaceship", "fav_planet", "fav_robot"]
+        
+        user_preferences = {}
+        st.subheader("Select your favorites from each category:")
+
+        for col_name in feature_cols:
             options = df[col_name].dropna().unique().tolist()
             options.sort()
             user_preferences[col_name] = st.selectbox(
-                f"Favorite {col_name.replace('fav_', '').replace('_', ' ').title()}", 
-                options
+                f"**Favorite {col_name.replace('fav_', '').replace('_', ' ').title()}**", 
+                options,
+                index=None, # No default selection
+                placeholder="Choose an option..."
             )
 
-    if st.button("Classify Me!", type="primary", use_container_width=True):
-        with st.spinner("Finding your cluster..."):
-            predicted_cluster = predict_cluster(
-                user_preferences,
-                st.session_state.kmeans_model,
-                st.session_state.encoder,
-                st.session_state.top_features
-            )
-            
-            st.success(f"## You belong to Cluster #{predicted_cluster}!")
-            
-            # You can add descriptions for each cluster here
-            cluster_descriptions = {
-                0: "This cluster is defined by...",
-                1: "Fans in this group tend to prefer...",
-                # ... add descriptions for all k clusters
-            }
-            
-            st.write(cluster_descriptions.get(predicted_cluster, "No description available for this cluster yet."))
+        submitted = st.form_submit_button("Find My Cluster!", use_container_width=True)
+
+        if submitted:
+            # Validate that all fields are filled
+            if any(val is None for val in user_preferences.values()):
+                st.error("Please answer all questions before submitting.")
+            else:
+                # Save preferences to session state and switch page
+                st.session_state.user_quiz_answers = user_preferences
+                st.switch_page("pages/5_🏆_Your_Result.py")
 else:
-    st.error("Cannot create user input form because the data could not be loaded.")
+    st.error("Cannot create the quiz because the data could not be loaded.")

@@ -153,6 +153,59 @@ def predict_cluster(user_preferences, kmeans_model, encoder, top_features):
 
 
 # --- Example Usage (for testing) ---
+def analyze_clusters():
+    """Analyzes the dataset to find the defining characteristics of each cluster."""
+    print("Analyzing cluster characteristics...")
+    
+    # 1. Load artifacts and data
+    kmeans_model, encoder, top_features = load_clustering_artifacts()
+    if kmeans_model is None:
+        return None, None
+
+    try:
+        df = pd.read_csv(DATA_DIR / "starwars.csv")
+    except FileNotFoundError:
+        print(f"Error: starwars.csv not found in {DATA_DIR}")
+        return None, None
+
+    # 2. Assign clusters to the full dataset
+    feature_cols = ["fav_heroe", "fav_villain", "fav_soundtrack", 
+                    "fav_spaceship", "fav_planet", "fav_robot"]
+    X = df[feature_cols].astype(str)
+    X_enc = encoder.transform(X)
+    all_feature_names = encoder.get_feature_names_out(feature_cols)
+    
+    top_idx = [list(all_feature_names).index(f) for f in top_features]
+    X_top = X_enc[:, top_idx]
+    Xn = normalize(X_top)
+    
+    df['cluster'] = kmeans_model.predict(Xn)
+    print("Assigned clusters to the full dataset.")
+
+    # 3. Analyze each cluster
+    cluster_summary = {}
+    num_clusters = kmeans_model.n_clusters
+
+    for i in range(num_clusters):
+        cluster_df = df[df['cluster'] == i]
+        summary = {
+            'size': len(cluster_df),
+            'percentage': 100 * len(cluster_df) / len(df),
+            'top_answers': {}
+        }
+        
+        for col in feature_cols:
+            # Get top 3 most common answers and their percentage
+            counts = cluster_df[col].value_counts().nlargest(3)
+            percentages = 100 * counts / len(cluster_df)
+            summary['top_answers'][col] = list(zip(counts.index, counts, percentages))
+            
+        cluster_summary[i] = summary
+    
+    print("✅ Cluster analysis complete.")
+    return cluster_summary, num_clusters
+
+
 if __name__ == '__main__':
     # Train the model if artifacts don't exist
     if not KMEANS_MODEL_PATH.exists():
