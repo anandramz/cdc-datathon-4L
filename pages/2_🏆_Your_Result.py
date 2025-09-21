@@ -6,7 +6,7 @@ st.set_page_config(layout="centered", page_title="🏆 Your Result")
 # --- Check for Quiz Answers ---
 if 'user_quiz_answers' not in st.session_state or not st.session_state.user_quiz_answers:
     st.warning("You need to complete the quiz first!")
-    st.page_link("pages/4_📝_Fan_Quiz.py", label="Take the Star Wars Fan Quiz", icon="📝")
+    st.page_link("pages/1_📝_Fan_Quiz.py", label="Take the Star Wars Fan Quiz", icon="📝")
     st.stop()
 
 # --- Load Model and Predict ---
@@ -77,9 +77,19 @@ if cluster_summary and predicted_cluster in cluster_summary:
 
     feature_cols = ["fav_heroe", "fav_villain", "fav_planet", "fav_robot", "fav_spaceship", "fav_soundtrack"]
     
+    # Display name mapping for better user experience
+    display_names = {
+        "fav_heroe": "Hero",
+        "fav_villain": "Villain", 
+        "fav_soundtrack": "Soundtrack",
+        "fav_spaceship": "Spaceship",
+        "fav_planet": "Planet",
+        "fav_robot": "Robot"
+    }
+    
     for col_name in feature_cols:
         st.markdown("--- ")
-        category_name = col_name.replace('fav_', '').replace('_', ' ').title()
+        category_name = display_names.get(col_name, col_name.replace('fav_', '').replace('_', ' ').title())
         st.subheader(f"Favorite {category_name}")
 
         user_answer = user_preferences.get(col_name, "N/A")
@@ -126,4 +136,4 @@ with col2:
             del st.session_state['user_quiz_answers']
         if 'user_cluster' in st.session_state:
             del st.session_state['user_cluster']
-        st.switch_page("pages/4_📝_Fan_Quiz.py")
+        st.switch_page("pages/1_📝_Fan_Quiz.py")

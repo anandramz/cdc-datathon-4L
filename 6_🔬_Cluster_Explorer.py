@@ -20,7 +20,7 @@ cluster_summary, num_clusters = load_analysis()
 
 if cluster_summary is None:
     st.error("Model artifacts not found. Please train the model first on the 'Fan Quiz' page.")
-    st.page_link("pages/4_📝_Fan_Quiz.py", label="Go to Quiz Page to Train Model", icon="📝")
+    st.page_link("pages/1_📝_Fan_Quiz.py", label="Go to Quiz Page to Train Model", icon="📝")
     st.stop()
 
 # --- Interactive Cluster Selection ---
@@ -56,12 +56,23 @@ if selected_cluster in cluster_summary:
     feature_cols = ["fav_heroe", "fav_villain", "fav_soundtrack", 
                     "fav_spaceship", "fav_planet", "fav_robot"]
     
+    # Display name mapping for better user experience
+    display_names = {
+        "fav_heroe": "Hero",
+        "fav_villain": "Villain", 
+        "fav_soundtrack": "Soundtrack",
+        "fav_spaceship": "Spaceship",
+        "fav_planet": "Planet",
+        "fav_robot": "Robot"
+    }
+    
     display_cols = st.columns(3)
     col_idx = 0
 
     for cat_col in feature_cols:
         with display_cols[col_idx % 3]:
-            st.markdown(f"**Favorite {cat_col.replace('fav_', '').replace('_', ' ').title()}**")
+            category_name = display_names.get(cat_col, cat_col.replace('fav_', '').replace('_', ' ').title())
+            st.markdown(f"**Favorite {category_name}**")
             
             top_answers = summary['top_answers'].get(cat_col, [])
             

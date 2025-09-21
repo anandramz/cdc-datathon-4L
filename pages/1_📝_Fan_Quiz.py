@@ -39,55 +39,13 @@ def initialize_state():
 
 initialize_state()
 
-# --- Sidebar for Training and Model Info ---
-with st.sidebar:
-    st.header("Model Management")
-    
-    # Check if model artifacts exist
-    artifacts_exist = all([
-        (MODELS_DIR / "kmeans_model.joblib").exists(),
-        (MODELS_DIR / "encoder.joblib").exists(),
-        (MODELS_DIR / "top_features.joblib").exists()
-    ])
-
-    if artifacts_exist:
-        st.success("✅ Model artifacts found!")
-        if st.button("Reload Model Artifacts") or not st.session_state.artifacts_loaded:
-            with st.spinner("Loading model artifacts..."):
-                model, enc, features = load_clustering_artifacts()
-                if model is not None:
-                    st.session_state.kmeans_model = model
-                    st.session_state.encoder = enc
-                    st.session_state.top_features = features
-                    st.session_state.artifacts_loaded = True
-                    st.rerun()
-                else:
-                    st.error("Failed to load artifacts.")
-    else:
-        st.warning("Model artifacts not found. Please train the model.")
-
-    st.subheader("Train Model")
-    st.caption("Run this if you haven't trained the model or if the data has changed.")
-    if st.button("Train Clustering Model", type="primary"):
-        with st.spinner("Training model... This might take a minute."):
-            model, enc, features = train_and_save_clustering_model()
-            if model is not None:
-                st.session_state.kmeans_model = model
-                st.session_state.encoder = enc
-                st.session_state.top_features = features
-                st.session_state.artifacts_loaded = True
-                st.success("Model trained and saved successfully!")
-                st.rerun()
-            else:
-                st.error("Model training failed.")
 
 # --- Main Page Content ---
 
 # --- Display Top Features for Context ---
 if not st.session_state.artifacts_loaded:
-    st.warning("The clustering model is not loaded. Please ask the administrator to train or load the model.")
-    if st.button("Attempt to Load Model"):
-        st.rerun() # Will trigger the load button in the sidebar
+    st.warning("⚠️ The clustering model is not loaded. Please visit the Model Management page to train or load the model.")
+    st.page_link("pages/7_⚙️_Model_Management.py", label="Go to Model Management", icon="⚙️")
     st.stop()
 
 # --- User Input Form for Classification ---
@@ -101,11 +59,22 @@ if df is not None:
         user_preferences = {}
         st.subheader("Select your favorites from each category:")
 
+        # Display name mapping for better user experience
+        display_names = {
+            "fav_heroe": "Hero",
+            "fav_villain": "Villain", 
+            "fav_soundtrack": "Soundtrack",
+            "fav_spaceship": "Spaceship",
+            "fav_planet": "Planet",
+            "fav_robot": "Robot"
+        }
+        
         for col_name in feature_cols:
             options = df[col_name].dropna().unique().tolist()
             options.sort()
+            display_name = display_names.get(col_name, col_name.replace('fav_', '').replace('_', ' ').title())
             user_preferences[col_name] = st.selectbox(
-                f"**Favorite {col_name.replace('fav_', '').replace('_', ' ').title()}**", 
+                f"**Favorite {display_name}**", 
                 options,
                 index=None, # No default selection
                 placeholder="Choose an option..."
@@ -120,6 +89,6 @@ if df is not None:
             else:
                 # Save preferences to session state and switch page
                 st.session_state.user_quiz_answers = user_preferences
-                st.switch_page("pages/5_🏆_Your_Result.py")
+                st.switch_page("pages/2_🏆_Your_Result.py")
 else:
     st.error("Cannot create the quiz because the data could not be loaded.")

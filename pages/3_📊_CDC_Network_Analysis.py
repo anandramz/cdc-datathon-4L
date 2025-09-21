@@ -44,11 +44,9 @@ def load_data():
     local_path = Path(__file__).resolve().parent.parent / "data" / "starwars.csv"
     if local_path.exists():
         df = pd.read_csv(local_path)
-        st.success("✅ Loaded local starwars.csv")
     else:
         CSV_URL = "https://file.notion.so/f/f/480fe70d-ee65-4488-92ae-8d4ac37ffce6/b225252d-c56f-4474-948d-9070669832b6/Pop_Culture.csv?table=block&id=27233ee0-9d2c-802d-9775-ccdd8127eecb&spaceId=480fe70d-ee65-4488-92ae-8d4ac37ffce6&expirationTimestamp=1758420000000&signature=5oTANnbAtDKr0CVnVO8-ME364fgmZe8q41NHIiDYVrs&downloadName=Pop_Culture.csv"
         df = pd.read_csv(CSV_URL)
-        st.success("✅ Loaded from URL")
     return df
 
 df = load_data()
@@ -66,11 +64,24 @@ def process_data(df_in: pd.DataFrame):
     # Build "type:value" tokens per row (dataset uses 'heroe' spelling)
     def prefixed_items(row):
         items = []
+        # Display name mapping for better user experience
+        type_mapping = {
+            "heroe": "hero",
+            "villain": "villain", 
+            "soundtrack": "soundtrack",
+            "spaceship": "spaceship",
+            "planet": "planet",
+            "robot": "robot",
+            "film": "film"
+        }
+        
         for c in fav_cols:
             typ = c.lower().replace("fav_", "")
+            # Use mapped type for display, but keep original for processing
+            display_typ = type_mapping.get(typ, typ)
             val = row[c]
             if pd.notna(val) and str(val).strip():
-                items.append(f"{typ}:{val}")
+                items.append(f"{display_typ}:{val}")
         return items
 
     df_items = df_in.copy()
@@ -161,19 +172,7 @@ with st.sidebar:
     if 'user_cluster' in st.session_state and cluster_choice == f"Cluster {st.session_state.user_cluster}":
         st.info(f"🎯 Showing your assigned cluster (Cluster {st.session_state.user_cluster}) from the quiz!")
     
-    # Add navigation buttons
-    st.markdown("---")
-    st.markdown("**Navigation**")
     
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("📝 Take Quiz", use_container_width=True):
-            st.switch_page("pages/4_📝_Fan_Quiz.py")
-    
-    with col2:
-        if st.button("🏆 My Result", use_container_width=True):
-            st.switch_page("pages/5_🏆_Your_Result.py")
-
 # Choose subset for the graph
 if cluster_choice == "All clusters":
     df_view = df_all
@@ -196,7 +195,7 @@ with st.sidebar:
     include_types = st.multiselect(
         "Item types to include",
         options=types_present,
-        default=[t for t in ["heroe", "villain", "film", "planet"] if t in types_present]
+        default=[t for t in ["hero", "villain", "film", "planet"] if t in types_present]
     )
 
     node_min_support = st.slider("Min item frequency", 5, 100, 20, 1)
@@ -234,10 +233,17 @@ def build_galaxy_html(include_types, node_min_support, edge_min_pair_count, edge
     edges.sort(key=lambda x: (x[3], x[2]), reverse=True)
     edges = edges[:max_edges]
 
+    # Only include nodes that have at least one connection meeting the thresholds
+    connected_nodes = set()
+    for a, b, inter, jac in edges:
+        connected_nodes.add(a)
+        connected_nodes.add(b)
+
     net = Network(height="700px", width="100%", bgcolor="#000", font_color="#fff", notebook=False)
     net.barnes_hut(gravity=-8000, central_gravity=0.28, spring_length=190, spring_strength=0.01, damping=0.9)
 
-    for it in allowed:
+    # Only add nodes that have connections
+    for it in connected_nodes:
         typ = item_types.get(it, "item")
         label = raw_labels.get(it, it)
         size = 12 + 6 * math.log10(max(freq[it], 10))
