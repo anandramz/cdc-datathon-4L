@@ -47,14 +47,15 @@ st.subheader("What does this mean?")
 
 # You can define more detailed and engaging descriptions for each cluster here.
 cluster_descriptions = {
-    0: "**The Original Trilogy Purist:** You have a deep appreciation for the classics. Your choices suggest a love for the foundational characters and stories that started it all, like Luke Skywalker's journey and the iconic conflict with Darth Vader.",
-    1: "**The Prequel Enthusiast:** You're drawn to the epic scale and complex politics of the Prequel era. You likely enjoy the dazzling lightsaber duels and the tragic story of Anakin Skywalker's fall from grace.",
-    2: "**The Modern Saga Fan:** You connect with the newer stories and characters from the Sequel Trilogy and beyond. You appreciate the fresh perspectives and the continuation of the Skywalker saga in a new generation.",
-    3: "**The Galactic Explorer:** Your interests are broad, spanning different eras and types of characters. You love the richness of the Star Wars universe itself, from its diverse planets to its unique spaceships and droids.",
-    4: "**The Empire Loyalist:** You have a fascination with the order and power of the Galactic Empire. You might be drawn to the sleek designs of Imperial ships and the commanding presence of its villains.",
-    5: "**The Rebel Alliance Sympathizer:** You stand with the underdogs. Your preferences align with the heroes of the Rebellion, their iconic starfighters, and their fight for freedom across the galaxy.",
-    6: "**The Scum and Villainy Aficionado:** You find the galaxy's underworld captivating. From bounty hunters to smugglers, you're interested in the characters who operate in the gray areas of the Star Wars universe.",
-    7: "**The Force Follower:** Your choices indicate a strong connection to the mystical aspects of Star Wars. Whether it's the Jedi or the Sith, you are most interested in stories centered around the Force."
+    0: "**The Senate Scholars:** This group is drawn to the intricate political maneuvering and grand-scale conflicts of the Republic era. They appreciate the complex characters and sophisticated starship designs that defined the fall of the Jedi and the rise of the Empire.",
+    1: "**The Core World Purists:** Fans in this cluster gravitate towards the foundational stories and characters of the original saga. Their preferences suggest a deep appreciation for the classic heroes' journey, the iconic struggle against tyranny, and the timeless aesthetic of the Galactic Civil War.",
+    2: "**The Outer Rim Mavericks:** This cluster identifies with the smugglers, bounty hunters, and independent spirits of the galaxy. They prefer the gritty, lived-in feel of frontier worlds like Tatooine and are fascinated by those who operate on the edges of the law.",
+    3: "**The Imperial Loyalists:** Adherents to order and power, this group is fascinated by the formidable presence of the Galactic Empire. They are drawn to its imposing military might, from the sleek design of TIE Fighters to the commanding presence of its dark-sided leaders.",
+    4: "**The Rebel Alliance Sympathizers:** This group stands with the underdogs and heroes fighting for freedom. Their choices reflect a love for the Rebellion's iconic starfighters, the camaraderie of its pilots, and the enduring hope that fuels their cause against overwhelming odds.",
+    5: "**The Force Mystics:** For this cluster, the heart of the saga lies in the mystical energy that binds the galaxy together. Whether Jedi or Sith, their interest is primarily in the characters who wield the Force and the ancient prophecies that surround them.",
+    6: "**The Republic Veterans:** This group's preferences are firmly rooted in the Clone Wars era. They are captivated by the epic battles, the diverse legions of clone troopers, and the tragic heroes who navigated the turbulent end of the Republic.",
+    7: "**The Scum and Villainy Aficionados:** Fans in this cluster are most interested in the galaxy's shadowy underworld. They appreciate the stories that unfold in cantinas and criminal dens, focusing on the complex motivations of those who thrive outside the law.",
+    8: "**The Skywalker Saga Devotees:** This group is focused on the central family drama that spans the first six films. Their choices indicate a deep investment in the intertwined destinies of the Skywalker lineage, from Anakin's fall to Luke's redemption."
 }
 
 # Get the number of clusters from the model
